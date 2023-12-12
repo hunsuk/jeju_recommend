@@ -11,7 +11,12 @@ async function bootstrap(): Promise<void> {
 
     // Setup standardized WS adapter for socket communication instead of socket.io
     app.useWebSocketAdapter(new WsAdapter(app));
-
+    app.enableCors();
+    app.enableCors({
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+        allowedHeaders: 'Content-Type,Authorization',});
     app.setGlobalPrefix('api');
     await app.listen(process.env.PORT || port);
     const broadcastListener = new BroadcastListener();

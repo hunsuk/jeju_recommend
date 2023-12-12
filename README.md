@@ -1,11 +1,1 @@
 # capston_jeju_recommend
-# capston_jeju_recommend
-# capston_jeju_recommend
-# capston_jeju_recommend
-# capston_jeju_recommend
-# capston_jeju_recommend
-# capston_jeju_recommend
-# jeju_recommend
-# jeju_recommend
-# jeju_recommend
-# jeju_recommend

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Container,
@@ -6,43 +6,29 @@ import {
   VStack,
   Text,
   Box,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Image,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 
-//todo : 응답한 데이터를 한번에 모아 서버로 전송 후 응답받기
-/*request: answers: {Yes, No, Yes, ...}
-  response: { 
-    "Destinaion":{
-        "items":[
-            {"id" : 1, "title"  : "한라산" , "URL": "sdsd" , "intrudcution" : "ㅁㄴㅇㅁㄴㅇ", "tag":["커피"], "address" :"제주시"},
-            {"id" : 2, "title"  : "한라산" , "URL": "" , "intrudcution" : "ㅁㄴㅇㅁㄴㅇ", "tag":["커피"],"address" :"제주시"}
-        ]
-    },
-
-    "FoodStore":{
-        "items":[
-            {"id" : 1, "title"  : "한라산" , "URL": "sdsd" , "intrudcution" : "ㅁㄴㅇㅁㄴㅇ", "tag":["커피"],"address" :"제주시"},
-            {"id" : 2, "title"  : "한라산" , "URL": "" , "intrudcution" : "ㅁㄴㅇㅁㄴㅇ", "tag":["커피"],"address" :"제주시"}
-        ]
-    },
-
-    "Lodging":{
-        "items":[
-             {"id" : 1, "title"  : "한라산" , "URL": "sdsd" , "intrudcution" : "ㅁㄴㅇㅁㄴㅇ", "tag":["커피"],"address" :"제주시"},
-            {"id" : 2, "title"  : "한라산" , "URL": "" , "intrudcution" : "ㅁㄴㅇㅁㄴㅇ", "tag":["커피"],"address" :"제주시"}
-        ]
-    }
-}
-                  */
+//todo : 모듈화 - 파일 나누기
+//todo : 페이지네이션 가운데 정렬 취소
 
 const QuestionListPage = () => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [destinaions, setDestinations] = useState([]);
-  const [lodgings, setLodings] = useState([]);
+  const [destinations, setDestinations] = useState([]);
+  const [lodgings, setLodgings] = useState([]);
   const [foodStores, setFoodStores] = useState([]);
-  const result = 1;
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const itemsPerPage = 4;
 
   const questions = [
     "1. 사람 많은 곳을 좋아하십니까?",
@@ -63,6 +49,10 @@ const QuestionListPage = () => {
     setQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
+  useEffect(() => {
+    sendAnswersToServer();
+  }, []); // Trigger the request when component mounts
+
   // 서버에 응답 전송 및 받기
   const sendAnswersToServer = () => {
     axios
@@ -72,7 +62,7 @@ const QuestionListPage = () => {
 
         // 각 배열을 상태로 업데이트
         setDestinations(Destinaion);
-        setLodings(Lodging);
+        setLodgings(Lodging);
         setFoodStores(FoodStore);
 
         console.log("서버 응답:", Destinaion, Lodging, FoodStore);
@@ -80,6 +70,27 @@ const QuestionListPage = () => {
       .catch((error) => {
         console.error("Error sending answers to server:", error);
       });
+  };
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+  };
+
+  const renderItems = (items) => {
+    const startIndex = currentPage * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return items.slice(startIndex, endIndex).map((item) => (
+      <Box
+        key={item.id}
+        p={4}
+        borderWidth="3px"
+        borderRadius="lg"
+        width="300px"
+      >
+        <Image src={item.URL} alt={item.title} mb={2} borderRadius="lg" />
+        <Text mb={2}>{item.title}</Text>
+        <Text>{item.intrudcution}</Text>
+      </Box>
+    ));
   };
 
   return (
@@ -119,14 +130,7 @@ const QuestionListPage = () => {
           </Box>
         )}
 
-        {answers.length > 0 && (
-          <Text>
-            You selected: <strong>{answers.join(", ")}</strong>
-          </Text>
-        )}
-
         {questionIndex === questions.length && (
-          //todo : 결과 추가
           <>
             <Button
               colorScheme="teal"
@@ -136,22 +140,66 @@ const QuestionListPage = () => {
             >
               추천 받기
             </Button>
-            <Link to="/">Go to Home Page</Link>
           </>
         )}
 
-        {/* {result && (
-          <Box p={4} borderWidth="3px" borderRadius="lg" width="300px" mt={4}>
-            <Text mb={2}>여행 추천 결과:</Text>
-            <Text>{result.lodging}</Text>
-            <Text>{result.food}</Text>
-            <Text>{result.place}</Text>
-  
-          </Box>
-        )} */}
+        <Tabs isFitted>
+          <TabList mb="4">
+            <Tab>관광지</Tab>
+            <Tab>숙소</Tab>
+            <Tab>음식점</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              {destinations.length > 0 && (
+                <VStack spacing={4} align="center">
+                  {renderItems(destinations)}
+                  <ReactPaginate
+                    pageCount={Math.ceil(destinations.length / itemsPerPage)}
+                    pageRangeDisplayed={3}
+                    marginPagesDisplayed={1}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                  />
+                </VStack>
+              )}
+            </TabPanel>
+            <TabPanel>
+              {lodgings.length > 0 && (
+                <VStack spacing={4} align="center">
+                  {renderItems(lodgings)}
+                  <ReactPaginate
+                    pageCount={Math.ceil(lodgings.length / itemsPerPage)}
+                    pageRangeDisplayed={3}
+                    marginPagesDisplayed={1}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                  />
+                </VStack>
+              )}
+            </TabPanel>
+            <TabPanel>
+              {foodStores.length > 0 && (
+                <VStack spacing={4} align="center">
+                  {renderItems(foodStores)}
+                  <ReactPaginate
+                    pageCount={Math.ceil(foodStores.length / itemsPerPage)}
+                    pageRangeDisplayed={3}
+                    marginPagesDisplayed={1}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                  />
+                </VStack>
+              )}
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </VStack>
+      <Link to="/">Go to Home Page</Link>
     </Container>
   );
 };
-
 export default QuestionListPage;

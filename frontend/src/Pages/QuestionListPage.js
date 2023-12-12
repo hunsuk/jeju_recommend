@@ -49,10 +49,6 @@ const QuestionListPage = () => {
     setQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
-  useEffect(() => {
-    sendAnswersToServer();
-  }, []); // Trigger the request when component mounts
-
   // 서버에 응답 전송 및 받기
   const sendAnswersToServer = () => {
     axios
@@ -136,7 +132,7 @@ const QuestionListPage = () => {
               colorScheme="teal"
               size="lg"
               mt={4}
-              onClick={sendAnswersToServer}
+              onClick={sendAnswersToServer()}
             >
               추천 받기
             </Button>

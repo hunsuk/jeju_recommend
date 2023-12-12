@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Container,
@@ -19,6 +19,7 @@ import ReactPaginate from "react-paginate";
 
 //todo : 모듈화 - 파일 나누기
 //todo : 페이지네이션 가운데 정렬 취소
+//todo : 추천받기 버튼 클릭시 text, 버튼 없어지게
 
 const QuestionListPage = () => {
   const [questionIndex, setQuestionIndex] = useState(0);

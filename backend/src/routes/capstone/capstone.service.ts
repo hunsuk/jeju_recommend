@@ -27,7 +27,6 @@ export class CapstoneService {
 
     }
 
-
     //질문지 태그 추출
     async extractionTag(){
 
@@ -38,11 +37,11 @@ export class CapstoneService {
       const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
       SELECT ?관광지 ?소개 ?이미지 ?주소
+
       WHERE { 
           ?관광지 rdf:type :Destination .
           ?관광지 :has_Tag_type :Tag_커플 .
-          ?관광지 :has_Tag_type :Tag_걷기 .
-          
+          ?관광지 :has_Tag_type :Tag_걷기 .          
           ?관광지 :has_Introduction ?소개 .
           ?관광지 :has_Image ?이미지 .
           ?관광지 :has_LoadAddress ?주소
@@ -140,7 +139,6 @@ export class CapstoneService {
         console.log(e);
       }
     }
-
     async querySearch() {
         const queryString = `select * where { 
             ?s ?p ?o .

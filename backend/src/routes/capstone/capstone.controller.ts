@@ -21,5 +21,6 @@ export class CapstoneController {
         const lodging = await this.capstoneService.recommendLodging();
 
         return {"Destinaion":destination, "FoodStore":foodStore, "Lodging":lodging };
+
     }
 }

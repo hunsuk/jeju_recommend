@@ -39,7 +39,10 @@ import axios from "axios";
 const QuestionListPage = () => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [result, setResult] = useState(null);
+  const [destinaions, setDestinations] = useState([]);
+  const [lodgings, setLodings] = useState([]);
+  const [foodStores, setFoodStores] = useState([]);
+  const result = 1;
 
   const questions = [
     "1. 사람 많은 곳을 좋아하십니까?",
@@ -65,9 +68,14 @@ const QuestionListPage = () => {
     axios
       .post("http://localhost:9090/api/capstone/getResult/", { answers })
       .then((response) => {
-        console.log(response.data);
-        //setResult(response.data); //todo : 구조 분해 할당 필요
-        console.log("Server Response:", response.data);
+        const { Destinaion, Lodging, FoodStore } = response.data;
+
+        // 각 배열을 상태로 업데이트
+        setDestinations(Destinaion);
+        setLodings(Lodging);
+        setFoodStores(FoodStore);
+
+        console.log("서버 응답:", Destinaion, Lodging, FoodStore);
       })
       .catch((error) => {
         console.error("Error sending answers to server:", error);
@@ -126,21 +134,21 @@ const QuestionListPage = () => {
               mt={4}
               onClick={sendAnswersToServer}
             >
-              제출
+              추천 받기
             </Button>
             <Link to="/">Go to Home Page</Link>
           </>
         )}
 
-        {result && (
+        {/* {result && (
           <Box p={4} borderWidth="3px" borderRadius="lg" width="300px" mt={4}>
             <Text mb={2}>여행 추천 결과:</Text>
             <Text>{result.lodging}</Text>
             <Text>{result.food}</Text>
             <Text>{result.place}</Text>
-            {/* 기타 결과 데이터 표시 */}
+  
           </Box>
-        )}
+        )} */}
       </VStack>
     </Container>
   );

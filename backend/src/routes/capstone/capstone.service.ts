@@ -28,7 +28,25 @@ export class CapstoneService {
     }
 
     //질문지 태그 추출
-    async extractionTag(){
+    async extractionTag(index){
+      const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      SELECT ?태그 ?타입
+      WHERE { 
+          ?질문지 rdf:type :Question .
+          ?질문지 :has_Index "${index}"^^xsd:decimal .
+         ?질문지 :has_Attribute ?태그.
+          ?질문지 :has_Question_type ?타입.
+      }`
+
+      try {
+        const result = await this.graphKBConnectionService.executeQuery(queryString);
+        const data = result.results.bindings;
+        return data;
+      } catch (e){
+        console.log("error");
+      }
 
     }
 

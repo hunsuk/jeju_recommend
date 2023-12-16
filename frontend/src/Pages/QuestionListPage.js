@@ -1,21 +1,9 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Container,
-  Heading,
-  VStack,
-  Text,
-  Box,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Image,
-} from "@chakra-ui/react";
+import { Container, Heading, VStack, Text, Box, Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import ReactPaginate from "react-paginate";
+import RecommendationTabs from "../Components/RecommendationTabs";
+import QuestionForm from "../Components/QuestionForm";
 
 //todo : 모듈화 - 파일 나누기
 //todo : 페이지네이션 가운데 정렬 취소
@@ -89,7 +77,6 @@ const QuestionListPage = () => {
       </Box>
     ));
   };
-
   return (
     <Container centerContent justifyContent={"center"}>
       <Heading m={4}>질문에 답해주세요</Heading>
@@ -97,106 +84,25 @@ const QuestionListPage = () => {
         관광지, 숙소, 음식점을 차례로 추천해드립니다
       </Text>
       <VStack spacing={10} align="center">
-        {questionIndex < questions.length && (
-          <Box
-            p={4}
-            borderWidth="3px"
-            borderRadius="lg"
-            width="300px"
-            height="70vh"
-            align="center"
-          >
-            <Text paddingTop={40} paddingBottom={5}>
-              {questions[questionIndex]}
-            </Text>
-            <Button
-              p={5}
-              colorScheme="teal"
-              onClick={() => handleButtonClick("Yes")}
-            >
-              예
-            </Button>
-            <Button
-              p={5}
-              marginLeft={5}
-              colorScheme="red"
-              onClick={() => handleButtonClick("No")}
-            >
-              아니요
-            </Button>
-          </Box>
-        )}
+        <QuestionForm
+          questionIndex={questionIndex}
+          questions={questions}
+          handleButtonClick={handleButtonClick}
+          sendAnswersToServer={sendAnswersToServer}
+        />
 
-        {questionIndex === questions.length && (
-          <>
-            <Button
-              colorScheme="teal"
-              size="lg"
-              mt={4}
-              onClick={sendAnswersToServer()}
-            >
-              추천 받기
-            </Button>
-          </>
-        )}
-
-        <Tabs isFitted>
-          <TabList mb="4">
-            <Tab>관광지</Tab>
-            <Tab>숙소</Tab>
-            <Tab>음식점</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              {destinations.length > 0 && (
-                <VStack spacing={4} align="center">
-                  {renderItems(destinations)}
-                  <ReactPaginate
-                    pageCount={Math.ceil(destinations.length / itemsPerPage)}
-                    pageRangeDisplayed={3}
-                    marginPagesDisplayed={1}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                  />
-                </VStack>
-              )}
-            </TabPanel>
-            <TabPanel>
-              {lodgings.length > 0 && (
-                <VStack spacing={4} align="center">
-                  {renderItems(lodgings)}
-                  <ReactPaginate
-                    pageCount={Math.ceil(lodgings.length / itemsPerPage)}
-                    pageRangeDisplayed={3}
-                    marginPagesDisplayed={1}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                  />
-                </VStack>
-              )}
-            </TabPanel>
-            <TabPanel>
-              {foodStores.length > 0 && (
-                <VStack spacing={4} align="center">
-                  {renderItems(foodStores)}
-                  <ReactPaginate
-                    pageCount={Math.ceil(foodStores.length / itemsPerPage)}
-                    pageRangeDisplayed={3}
-                    marginPagesDisplayed={1}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                  />
-                </VStack>
-              )}
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <RecommendationTabs
+          destinations={destinations}
+          lodgings={lodgings}
+          foodStores={foodStores}
+          itemsPerPage={itemsPerPage}
+          renderItems={renderItems}
+          handlePageClick={handlePageClick}
+        />
       </VStack>
       <Link to="/">Go to Home Page</Link>
     </Container>
   );
 };
+
 export default QuestionListPage;

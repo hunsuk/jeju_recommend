@@ -8,23 +8,29 @@ import {
   Flex,
   Image,
   Stack,
+  Divider,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 const DolsiPage = () => {
   return (
     <Box
-      p={8}
+      p={4}
       textAlign="center"
-      height="80vh"
       display="flex"
       flexDirection="column"
       justifyContent="center"
     >
-      <Heading as="h1" size="2xl" mb={150}>
-        돌씨 여행 플래너
+      <Heading as="h1" fontFamily="SOYOMapleBoldTTF" paddingTop={6}>
+        🍊 돌씨 여행 플래너
       </Heading>
 
+      <Divider
+        colorScheme="teal"
+        my={3}
+        borderWidth={"2px"}
+        variant={"solid"}
+      />
       <Flex
         direction={{ base: "column", md: "row" }}
         alignItems="center"
@@ -39,19 +45,15 @@ const DolsiPage = () => {
           mb={{ base: 4, md: 0 }}
         />
 
-        <Stack flex="1" textAlign="left">
-          <Text fontSize="xl" mb={4}>
-            돌씨 여행 플래너를 통해 제주도의 아름다운 풍경과 다양한 명소를
-            탐험하세요. 여행 일정을 계획하고 즐거운 여행을 만들어보세요!
-          </Text>
+        <Stack>
           <Link to="/question">
-            <Button colorScheme="teal" size="lg" mb={4}>
+            <Button textAlign="center" colorScheme="teal" size="lg" mb={4}>
               여행 일정 만들기
             </Button>
           </Link>
-          <Text fontSize="md">
-            돌씨 여행 플래너는 제주도 여행을 계획하는 데 필요한 모든 정보를
-            제공합니다. 즐거운 여행이 되길 바랍니다!
+
+          <Text fontSize={"px"}>
+            여행 일정을 계획하고,<br></br> 즐거운 여행을 만들어보세요<br></br>
           </Text>
         </Stack>
       </Flex>

@@ -15,8 +15,7 @@ export class CapstoneService {
       SELECT ?태그
       WHERE { 
           :${title} :has_Tag_type ?태그 
-      }
-      `;
+      }`;
       try {
         const tags = [];
         const result = await this.graphKBConnectionService.executeQuery(queryString);
@@ -38,7 +37,7 @@ export class CapstoneService {
           ?질문지 :has_Index "${index}"^^xsd:decimal .
          ?질문지 :has_Attribute ?태그.
           ?질문지 :has_Question_type ?타입.
-      }`
+      }`;
 
       try {
         const result = await this.graphKBConnectionService.executeQuery(queryString);
@@ -51,24 +50,38 @@ export class CapstoneService {
     }
 
     //관광지 추천
-    async recommendDestination(){
-      const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    async recommendDestination(addTags, deleteTags){
+      let queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
-      SELECT ?관광지 ?소개 ?이미지 ?주소 ?Lat ?Lon
-
+      SELECT DISTINCT ?관광지 ?소개 ?이미지 ?주소 ?Lat ?Lon
       WHERE { 
-          ?관광지 rdf:type :Destination .
-          ?관광지 :has_Tag_type :Tag_커플 .
-          ?관광지 :has_Tag_type :Tag_걷기 .          
+          ?관광지 rdf:type :Destination .`;
+      for (let i = 0; i < addTags.length; i++){
+        queryString += '{';
+        queryString += `?관광지 :has_Tag_type :${addTags[i]} .`;
+        if (i !== addTags.length - 1){
+          queryString +='} UNION';
+        } else{
+          queryString += '}';
+        }
+      }
+
+      for (let i = 0; i < deleteTags.length; i++){
+        queryString +='FILTER NOT EXISTS {';
+        queryString +=`?관광지 :has_Tag_type :${deleteTags[i]}`;
+        queryString +='}';
+      }
+
+      queryString += `          
           ?관광지 :has_Introduction ?소개 .
           ?관광지 :has_Image ?이미지 .
           ?관광지 :has_LoadAddress ?주소 .
     	    ?관광지 :has_Lat ?Lat .
     	    ?관광지 :has_Lon ?Lon 
-    
-      }`
+        }`;
       try {
-        const destination = []
+        const destination = [];
+        console.log(queryString);
         const result = await this.graphKBConnectionService.executeQuery(queryString);
         const data = result.results.bindings;
         for(let i = 0; i < data.length; i++){
@@ -90,29 +103,37 @@ export class CapstoneService {
     }
 
     //음식점 추천
-    async recommendFoodStore(){
-      const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    async recommendFoodStore(addTags, deleteTags){
+      let queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
-      
-      SELECT ?음식점 ?소개 ?이미지 ?주소 ?Lat ?Lon
+      SELECT DISTINCT ?음식점 ?소개 ?이미지 ?주소 ?Lat ?Lon
       WHERE { 
-          ?음식점 rdf:type :FoodStore .
-      
-          {
-              ?음식점 :has_Tag_type :Tag_갈비찜 
-          }
-          UNION
-          {
-              ?음식점 :has_Tag_type :Tag_고등어
-          }
+          ?음식점 rdf:type :FoodStore .`;
+      for (let i = 0; i < addTags.length; i++){
+        queryString += '{';
+        queryString += `?음식점 :has_Tag_type :${addTags[i]} .`;
+        if (i !== addTags.length - 1){
+          queryString +='} UNION';
+        } else{
+          queryString += '}';
+        }
+      }
+
+      for (let i = 0; i < deleteTags.length; i++){
+        queryString +='FILTER NOT EXISTS {';
+        queryString +=`?음식점 :has_Tag_type :${deleteTags[i]}`;
+        queryString +='}';
+      }
+
+      queryString += `          
           ?음식점 :has_Introduction ?소개 .
           ?음식점 :has_Image ?이미지 .
           ?음식점 :has_LoadAddress ?주소 .
-          ?음식점 :has_Lat ?Lat .
+    	    ?음식점 :has_Lat ?Lat .
     	    ?음식점 :has_Lon ?Lon 
-      }`
+        }`;
       try {
-        const foodStore = []
+        const foodStore = [];
         const result = await this.graphKBConnectionService.executeQuery(queryString);
         const data = result.results.bindings
         for(let i = 0; i < data.length; i++){
@@ -127,32 +148,46 @@ export class CapstoneService {
           temp['lon'] = data[i]['Lon'].value;
           foodStore.push(temp);
         }
-        return foodStore
+        return foodStore;
       } catch (e){
-        console.log(e)
+        console.log(e);
       }
     }
 
     //숙소 추천
-    async recommendLodging(){
-      const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    async recommendLodging(addTags, deleteTags){
+      let queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
-      SELECT ?숙소 ?소개 ?이미지 ?주소 ?Lat ?Lon
+      SELECT DISTINCT ?숙소 ?소개 ?이미지 ?주소 ?Lat ?Lon
       WHERE { 
-          ?숙소 rdf:type :Lodging .
-          ?숙소 :has_Tag_type :Tag_커플 .
-          ?숙소 :has_Tag_type :Tag_호텔 .
-          
+          ?숙소 rdf:type :Lodging .`;
+      for (let i = 0; i < addTags.length; i++){
+        queryString += '{';
+        queryString += `?숙소 :has_Tag_type :${addTags[i]} .`;
+        if (i !== addTags.length - 1){
+          queryString +='} UNION';
+        } else{
+          queryString += '}';
+        }
+      }
+
+      for (let i = 0; i < deleteTags.length; i++){
+        queryString +='FILTER NOT EXISTS {';
+        queryString +=`?숙소 :has_Tag_type :${deleteTags[i]}`;
+        queryString +='}';
+      }
+
+      queryString += `          
           ?숙소 :has_Introduction ?소개 .
           ?숙소 :has_Image ?이미지 .
           ?숙소 :has_LoadAddress ?주소 .
-          ?숙소 :has_Lat ?Lat .
-    	    ?숙소 :has_Lon ?Lon .
-      }`
+    	    ?숙소 :has_Lat ?Lat .
+    	    ?숙소 :has_Lon ?Lon 
+        }`;
       try {
         const lodging = [];
         const result = await this.graphKBConnectionService.executeQuery(queryString);
-        const data = result.results.bindings
+        const data = result.results.bindings;
         for(let i = 0; i < data.length; i++){
           const temp ={};
           temp['id'] = i + 1;
@@ -178,12 +213,11 @@ export class CapstoneService {
         
         try {
             const result = await this.graphKBConnectionService.executeQuery(queryString);
-            return result
+            return result;
         } catch (e){
-            console.log(e)
+            console.log(e);
         }
     }
-
 
     async queryUpdate() {
         const queryString = ``;

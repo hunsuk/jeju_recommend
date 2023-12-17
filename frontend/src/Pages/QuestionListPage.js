@@ -20,17 +20,10 @@ const QuestionListPage = () => {
   const itemsPerPage = 4;
 
   const questions = [
-    "1. 사람 많은 곳을 좋아하십니까?",
-    "2. 엑티비티를 즐기시는 편입니까?",
-    "3. 자연을 즐기시는 편입니까?",
-    "4. 채식주의자입니까?",
-    "5. 수산물을 좋아하십니까?",
-    "6. 매운 것을 좋아하십니까?",
-    "7. 자가용을 이용하십니까?",
-    "8. 흡연자이십니까?",
-    "9. 아침을 드시는 편입니까?",
-    "10. 아이와 함께 여행하실 예정입니까?",
-    "11. 일행이 3인 이상입니까?",
+    "1. 인스타 그램을 하시나요?",
+    "2. 당신은 동물을 싫어 하시나요?",
+    "3. 새로운 도전을 하는 것을 좋아한다?",
+    "4. 현생에 지쳐있는 상태 이시나요?",
   ];
 
   const handleButtonClick = (response) => {
@@ -44,13 +37,11 @@ const QuestionListPage = () => {
       .post("http://localhost:9090/api/capstone/getResult/", { answers })
       .then((response) => {
         const { Destinaion, Lodging, FoodStore } = response.data;
-
+        console.log("click Button")
         // 각 배열을 상태로 업데이트
         setDestinations(Destinaion);
         setLodgings(Lodging);
         setFoodStores(FoodStore);
-
-        console.log("서버 응답:", Destinaion, Lodging, FoodStore);
       })
       .catch((error) => {
         console.error("Error sending answers to server:", error);
@@ -99,6 +90,7 @@ const QuestionListPage = () => {
           renderItems={renderItems}
           handlePageClick={handlePageClick}
         />
+
       </VStack>
       <Link to="/">Go to Home Page</Link>
     </Container>

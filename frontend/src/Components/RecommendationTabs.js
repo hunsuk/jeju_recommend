@@ -1,13 +1,7 @@
-import React from "react";
-import {
-  VStack,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  TabList,
-  Tab,
-} from "@chakra-ui/react";
+import React, { useState } from "react";
+import { VStack, TabPanels, Tabs, TabList, Tab, Box } from "@chakra-ui/react";
 import ReactPaginate from "react-paginate";
+import "./pagination.css";
 
 const RecommendationTabs = ({
   destinations,
@@ -17,49 +11,65 @@ const RecommendationTabs = ({
   renderItems,
   handlePageClick,
 }) => {
+  const [activeTab, setActiveTab] = useState("destinations");
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const getActiveData = () => {
+    switch (activeTab) {
+      case "lodgings":
+        return lodgings;
+      case "foodStores":
+        return foodStores;
+      default:
+        return destinations;
+    }
+  };
+
+  const activeData = getActiveData();
+  const pageCount =
+    activeTab === "lodgings"
+      ? Math.ceil(lodgings.length / itemsPerPage)
+      : activeTab === "foodStores"
+      ? Math.ceil(foodStores.length / itemsPerPage)
+      : Math.ceil(activeData.length / itemsPerPage);
+
+  const handlePageChange = (selected) => {
+    handlePageClick(selected);
+  };
+
   return (
     <Tabs isFitted>
       <TabList mb="4" style={{ flexDirection: "row" }}>
-        {" "}
-        {/* 가로로 배치되도록 수정 */}
-        <Tab>관광지</Tab>
-        <Tab>숙소</Tab>
-        <Tab>음식점</Tab>
+        <Tab onClick={() => handleTabChange("destinations")}>관광지</Tab>
+        <Tab onClick={() => handleTabChange("lodgings")}>숙소</Tab>
+        <Tab onClick={() => handleTabChange("foodStores")}>음식점</Tab>
       </TabList>
       <TabPanels>
-        <TabPanel>
-          {destinations.length > 0 && (
-            <VStack spacing={4} align="center">
-              {renderItems(destinations)}
-            </VStack>
-          )}
-        </TabPanel>
-        <TabPanel>
-          {lodgings.length > 0 && (
-            <VStack spacing={4} align="center">
-              {renderItems(lodgings)}
-            </VStack>
-          )}
-        </TabPanel>
-        <TabPanel>
-          {foodStores.length > 0 && (
-            <VStack spacing={4} align="center">
-              {renderItems(foodStores)}
-            </VStack>
-          )}
-        </TabPanel>
+        {activeData.length > 0 && (
+          <VStack spacing={4} align="center">
+            {activeTab === "lodgings" && renderItems(lodgings)}
+            {activeTab === "destinations" && renderItems(destinations)}
+            {activeTab === "foodStores" && renderItems(foodStores)}
+          </VStack>
+        )}
       </TabPanels>
-      <ReactPaginate
-        pageCount={Math.ceil(destinations.length / itemsPerPage)} // 아무 배열이나 사용 (여기서는 destinations)
-        pageRangeDisplayed={3}
-        marginPagesDisplayed={1}
-        onPageChange={handlePageClick}
-        containerClassName={"pagination"}
-        activeClassName={"active"}
-        previousLabel={"이전"}
-        nextLabel={"다음"}
-      />
+      <Box mt={4} display="flex" justifyContent="center" alignItems="center">
+        <ReactPaginate
+          pageCount={pageCount}
+          pageRangeDisplayed={1}
+          marginPagesDisplayed={1}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+          previousLabel={"<"}
+          nextLabel={">"}
+        />
+      </Box>
     </Tabs>
   );
 };
+
 export default RecommendationTabs;

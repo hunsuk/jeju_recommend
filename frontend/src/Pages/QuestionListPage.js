@@ -34,10 +34,10 @@ const QuestionListPage = () => {
   // 서버에 응답 전송 및 받기
   const sendAnswersToServer = () => {
     axios
-      .post("http://localhost:9090/api/capstone/getResult/", { answers })
+      .post("http://52.78.163.252:9090/api/capstone/getResult/", { answers })
       .then((response) => {
         const { Destinaion, Lodging, FoodStore } = response.data;
-        console.log("click Button")
+        console.log("click Button");
         // 각 배열을 상태로 업데이트
         setDestinations(Destinaion);
         setLodgings(Lodging);
@@ -90,7 +90,6 @@ const QuestionListPage = () => {
           renderItems={renderItems}
           handlePageClick={handlePageClick}
         />
-
       </VStack>
       <Link to="/">Go to Home Page</Link>
     </Container>

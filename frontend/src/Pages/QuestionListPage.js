@@ -16,6 +16,7 @@ const QuestionListPage = () => {
   const [lodgings, setLodgings] = useState([]);
   const [foodStores, setFoodStores] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [hasSentAnswers, setHasSentAnswers] = useState(false); // 새로운 상태 추가
 
   const itemsPerPage = 4;
 
@@ -42,6 +43,7 @@ const QuestionListPage = () => {
         setDestinations(Destinaion);
         setLodgings(Lodging);
         setFoodStores(FoodStore);
+        setHasSentAnswers(true); // 응답을 보냈음을 나타내는 상태 업데이트
       })
       .catch((error) => {
         console.error("Error sending answers to server:", error);
@@ -81,15 +83,16 @@ const QuestionListPage = () => {
           handleButtonClick={handleButtonClick}
           sendAnswersToServer={sendAnswersToServer}
         />
-
-        <RecommendationTabs
-          destinations={destinations}
-          lodgings={lodgings}
-          foodStores={foodStores}
-          itemsPerPage={itemsPerPage}
-          renderItems={renderItems}
-          handlePageClick={handlePageClick}
-        />
+        {hasSentAnswers && (
+          <RecommendationTabs
+            destinations={destinations}
+            lodgings={lodgings}
+            foodStores={foodStores}
+            itemsPerPage={itemsPerPage}
+            renderItems={renderItems}
+            handlePageClick={handlePageClick}
+          />
+        )}
       </VStack>
       <Link to="/">Go to Home Page</Link>
     </Container>

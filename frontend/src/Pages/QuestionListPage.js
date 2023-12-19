@@ -5,10 +5,6 @@ import axios from "axios";
 import RecommendationTabs from "../Components/RecommendationTabs";
 import QuestionForm from "../Components/QuestionForm";
 
-//todo : 모듈화 - 파일 나누기
-//todo : 페이지네이션 가운데 정렬 취소
-//todo : 추천받기 버튼 클릭시 text, 버튼 없어지게
-
 const QuestionListPage = () => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -38,12 +34,10 @@ const QuestionListPage = () => {
       .post("http://52.78.163.252:9090/api/capstone/getResult/", { answers })
       .then((response) => {
         const { Destinaion, Lodging, FoodStore } = response.data;
-        console.log("click Button");
-        // 각 배열을 상태로 업데이트
         setDestinations(Destinaion);
         setLodgings(Lodging);
         setFoodStores(FoodStore);
-        setHasSentAnswers(true); // 응답을 보냈음을 나타내는 상태 업데이트
+        setHasSentAnswers(true);
       })
       .catch((error) => {
         console.error("Error sending answers to server:", error);

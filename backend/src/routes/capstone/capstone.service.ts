@@ -11,7 +11,7 @@ export class CapstoneService {
     }
     async getTag(title){
       const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
+      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/11/untitled-ontology-77#>
       SELECT ?태그
       WHERE { 
           :${title} :has_Tag_type ?태그 
@@ -29,7 +29,7 @@ export class CapstoneService {
     //질문지 태그 추출
     async extractionTag(index){
       const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
+      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/11/untitled-ontology-77#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       SELECT ?태그 ?타입
       WHERE { 
@@ -52,7 +52,7 @@ export class CapstoneService {
     //관광지 추천
     async recommendDestination(addTags, deleteTags){
       let queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
+      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/11/untitled-ontology-77#>
       SELECT DISTINCT ?관광지 ?소개 ?이미지 ?주소 ?Lat ?Lon
       WHERE { 
           ?관광지 rdf:type :Destination .`;
@@ -75,10 +75,11 @@ export class CapstoneService {
       queryString += `          
           ?관광지 :has_Introduction ?소개 .
           ?관광지 :has_Image ?이미지 .
-          ?관광지 :has_LoadAddress ?주소 .
+          ?관광지 :has_Address ?주소 .
     	    ?관광지 :has_Lat ?Lat .
     	    ?관광지 :has_Lon ?Lon 
         }`;
+        queryString += 'limit 20';
       try {
         const destination = [];
         console.log(queryString);
@@ -105,7 +106,7 @@ export class CapstoneService {
     //음식점 추천
     async recommendFoodStore(addTags, deleteTags){
       let queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
+      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/11/untitled-ontology-77#>
       SELECT DISTINCT ?음식점 ?소개 ?이미지 ?주소 ?Lat ?Lon
       WHERE { 
           ?음식점 rdf:type :FoodStore .`;
@@ -128,12 +129,15 @@ export class CapstoneService {
       queryString += `          
           ?음식점 :has_Introduction ?소개 .
           ?음식점 :has_Image ?이미지 .
-          ?음식점 :has_LoadAddress ?주소 .
+          ?음식점 :has_Address ?주소 .
     	    ?음식점 :has_Lat ?Lat .
     	    ?음식점 :has_Lon ?Lon 
         }`;
+        queryString += 'limit 20';
+
       try {
         const foodStore = [];
+        console.log(queryString)
         const result = await this.graphKBConnectionService.executeQuery(queryString);
         const data = result.results.bindings
         for(let i = 0; i < data.length; i++){
@@ -157,7 +161,7 @@ export class CapstoneService {
     //숙소 추천
     async recommendLodging(addTags, deleteTags){
       let queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/10/untitled-ontology-41#>
+      PREFIX : <http://www.semanticweb.org/untitled/ontologies/2023/11/untitled-ontology-77#>
       SELECT DISTINCT ?숙소 ?소개 ?이미지 ?주소 ?Lat ?Lon
       WHERE { 
           ?숙소 rdf:type :Lodging .`;
@@ -180,10 +184,12 @@ export class CapstoneService {
       queryString += `          
           ?숙소 :has_Introduction ?소개 .
           ?숙소 :has_Image ?이미지 .
-          ?숙소 :has_LoadAddress ?주소 .
+          ?숙소 :has_Address ?주소 .
     	    ?숙소 :has_Lat ?Lat .
     	    ?숙소 :has_Lon ?Lon 
         }`;
+        queryString += 'limit 20';
+
       try {
         const lodging = [];
         const result = await this.graphKBConnectionService.executeQuery(queryString);

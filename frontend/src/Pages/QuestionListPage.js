@@ -19,8 +19,10 @@ const QuestionListPage = () => {
   const questions = [
     "1. 인스타 그램을 하시나요?",
     "2. 당신은 동물을 싫어 하시나요?",
-    "3. 새로운 도전을 하는 것을 좋아한다?",
-    "4. 현생에 지쳐있는 상태 이시나요?",
+    "3. 새로운 도전을 하는 것을 좋아하시나요?",
+    "4. 이번 여행에 자동차를 이용하시나요?",
+    "5. 여행을 아이들과 함께 하시나요?",
+    "6. 자연을 좋아하시나요?",
   ];
 
   const handleButtonClick = (response) => {
@@ -31,7 +33,7 @@ const QuestionListPage = () => {
   // 서버에 응답 전송 및 받기
   const sendAnswersToServer = () => {
     axios
-      .post("http://52.78.163.252:9090/api/capstone/getResult/", { answers })
+      .post("http://57.78.163.252:9090/api/capstone/getResult/", { answers })
       .then((response) => {
         const { Destinaion, Lodging, FoodStore } = response.data;
         setDestinations(Destinaion);
